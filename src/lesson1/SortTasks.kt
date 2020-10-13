@@ -2,6 +2,7 @@
 
 package lesson1
 
+import java.io.File
 /**
  * Сортировка времён
  *
@@ -97,7 +98,23 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 121.3
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val minTemp = 2730
+    val maxTemp = 7730
+    val file = File(inputName).readLines()
+    val transformed = IntArray(file.size)
+
+    for ((index, line) in file.withIndex()) {
+        transformed[index] = (line.toDouble() * 10 + minTemp).toInt()
+    }
+
+    val output = File(outputName).bufferedWriter()
+    val sorted = countingSort(transformed, maxTemp)
+    for (element in sorted) {
+        val retransformed = (element - minTemp) / 10.0
+        output.write("$retransformed")
+        output.newLine()
+    }
+    output.close()
 }
 
 /**
@@ -130,7 +147,49 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+    val numbers = mutableListOf<Int>()
+    val file = File(inputName).readLines()
+
+    for (line in file) {
+        numbers.add(line.toInt())
+    }
+
+    numbers.sort()
+
+    var valueOfFrequent = 0
+    var maxFrequency = 0
+    var currentFrequency = 1
+    var previous = numbers[0]
+    for (i in 1 until numbers.size) {
+        val currentNum = numbers[i]
+        if (currentNum == previous) {
+            currentFrequency++
+        } else {
+            if (currentFrequency > maxFrequency) {
+                valueOfFrequent = previous
+                maxFrequency = currentFrequency
+            }
+            currentFrequency = 1
+        }
+        previous = currentNum
+    }
+    if (currentFrequency > maxFrequency) {
+        valueOfFrequent = previous
+        maxFrequency = currentFrequency
+    }
+
+    val output = File(outputName).bufferedWriter()
+    for (line in file) {
+        if (line.toInt() != valueOfFrequent) {
+            output.write(line)
+            output.newLine()
+        }
+    }
+    repeat(maxFrequency) {
+        output.write("$valueOfFrequent")
+        output.newLine()
+    }
+    output.close()
 }
 
 /**
