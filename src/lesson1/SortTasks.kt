@@ -98,6 +98,9 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 121.3
  */
 fun sortTemperatures(inputName: String, outputName: String) {
+    // Трудоёмкость O(N)
+    // Ресурсоёмкость O(N)
+
     val minTemp = 2730
     val maxTemp = 7730
     val file = File(inputName).readLines()
@@ -147,39 +150,38 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    val numbers = mutableListOf<Int>()
-    val file = File(inputName).readLines()
+    // Трудоёмкость O(N*logN) + 3 * O(N) = O(N*logN)
+    // Ресурсоёмкость O(N)
 
-    for (line in file) {
+    val numbers = mutableListOf<Int>()
+    val fileLines = File(inputName).readLines()
+
+    for (line in fileLines) {
         numbers.add(line.toInt())
     }
 
     numbers.sort()
 
-    var valueOfFrequent = 0
-    var maxFrequency = 0
+    var valueOfFrequent = numbers[0]
+    var previous = valueOfFrequent
+    var maxFrequency = 1
     var currentFrequency = 1
-    var previous = numbers[0]
     for (i in 1 until numbers.size) {
         val currentNum = numbers[i]
         if (currentNum == previous) {
             currentFrequency++
-        } else {
             if (currentFrequency > maxFrequency) {
                 valueOfFrequent = previous
                 maxFrequency = currentFrequency
             }
+        } else {
             currentFrequency = 1
         }
         previous = currentNum
     }
-    if (currentFrequency > maxFrequency) {
-        valueOfFrequent = previous
-        maxFrequency = currentFrequency
-    }
 
     val output = File(outputName).bufferedWriter()
-    for (line in file) {
+    for (line in fileLines) {
         if (line.toInt() != valueOfFrequent) {
             output.write(line)
             output.newLine()
