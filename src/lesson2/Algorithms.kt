@@ -100,7 +100,7 @@ fun longestCommonSubstring(first: String, second: String): String {
     // Трудоёмкость: O(N * M)
     // Ресурсоёмкость: O((N + 1) * (M + 1))
 
-    val arrayToName = Array(first.length + 1) { IntArray(second.length + 1) { 0 } }
+    val substrings = Array(first.length + 1) { IntArray(second.length + 1) { 0 } }
     val firstLength = first.length
     val secondLength = second.length
     var maxSubstringLength = 0
@@ -111,8 +111,8 @@ fun longestCommonSubstring(first: String, second: String): String {
     for (i in 1..firstLength) {
         for (j in 1..secondLength) {
             if (first[i - 1] == second[j - 1]) {
-                arrayToName[i][j] = arrayToName[i - 1][j - 1] + 1
-                val currSubstringLength = arrayToName[i][j]
+                substrings[i][j] = substrings[i - 1][j - 1] + 1
+                val currSubstringLength = substrings[i][j]
                 if (currSubstringLength > maxSubstringLength) {
                     maxSubstringLength = currSubstringLength
                     endIndexOfMaxSubstring = i
