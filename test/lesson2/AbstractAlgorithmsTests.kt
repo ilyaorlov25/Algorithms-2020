@@ -74,6 +74,11 @@ abstract class AbstractAlgorithmsTests {
     }
 
     fun longestCommonSubstring(longestCommonSubstring: (String, String) -> String) {
+        assertEquals("", longestCommonSubstring("", ""))
+        assertEquals(" ", longestCommonSubstring("MAKE love", "not war"))
+        assertEquals("Р", longestCommonSubstring("РРРР", "рррР"))
+        assertEquals("полное совпадение", longestCommonSubstring("полное совпадение", "полное совпадение"))
+
         assertEquals("", longestCommonSubstring("мой мир", "я"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
@@ -123,6 +128,9 @@ abstract class AbstractAlgorithmsTests {
     }
 
     fun calcPrimesNumber(calcPrimesNumber: (Int) -> Int) {
+        // Проверка на то, чтобы последнее число включалось, если оно простое:
+        assertEquals(9, calcPrimesNumber(23))
+
         assertEquals(0, calcPrimesNumber(-1))
         assertEquals(0, calcPrimesNumber(1))
         assertEquals(1, calcPrimesNumber(2))

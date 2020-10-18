@@ -2,6 +2,8 @@
 
 package lesson2
 
+import kotlin.math.sqrt
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -95,7 +97,37 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * вернуть ту из них, которая встречается раньше в строке first.
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    // Трудоёмкость: O(N * M)
+    // Ресурсоёмкость: O((N + 1) * (M + 1))
+
+    val arrayToName = Array(first.length + 1) { IntArray(second.length + 1) { 0 } }
+    val firstLength = first.length
+    val secondLength = second.length
+    var maxSubstringLength = 0
+    var endIndexOfMaxSubstring = 0
+
+    if (firstLength == 0 || secondLength == 0) return ""
+
+    for (i in 1..firstLength) {
+        for (j in 1..secondLength) {
+            if (first[i - 1] == second[j - 1]) {
+                arrayToName[i][j] = arrayToName[i - 1][j - 1] + 1
+                val currSubstringLength = arrayToName[i][j]
+                if (currSubstringLength > maxSubstringLength) {
+                    maxSubstringLength = currSubstringLength
+                    endIndexOfMaxSubstring = i
+                }
+            }
+        }
+    }
+
+    return if (maxSubstringLength == 0) ""
+    else {
+        first.substring(
+            endIndexOfMaxSubstring - maxSubstringLength,
+            endIndexOfMaxSubstring
+        )
+    }
 }
 
 /**
@@ -109,5 +141,20 @@ fun longestCommonSubstring(first: String, second: String): String {
  * Единица простым числом не считается.
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    // Трудоёмкость: O(limit * log(log(limit)))
+    // Ресурсоёмкость: O(limit + 1)
+
+    if (limit <= 1) return 0
+
+    val isPrime = BooleanArray(limit + 1) { true }
+    isPrime[0] = false
+    isPrime[1] = false
+
+    for (i in 2..sqrt(limit.toDouble()).toInt()) {
+        if (isPrime[i]) {
+            for (j in (i * i)..limit step i) isPrime[j] = false
+        }
+    }
+
+    return isPrime.count { it }
 }
