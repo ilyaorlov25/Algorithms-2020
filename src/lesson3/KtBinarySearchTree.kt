@@ -80,7 +80,43 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+        // Трудоёмкость: O(height)
+        if (!contains(element)) return false
+        root = remove(root, element)
+        size--
+        return true
+    }
+
+    private fun remove(currRoot: Node<T>?, element: T): Node<T>? {
+        var currRootVar = currRoot
+        if (currRootVar == null) return currRootVar
+        val comparison = element.compareTo(currRootVar.value)
+        if (comparison == 0) {
+            if (currRootVar.left != null && currRootVar.right != null) {
+                val left = currRootVar.left
+                val right = currRootVar.right
+                val newValue = getMinimumRightChild(currRootVar.right!!)
+                currRootVar = Node(newValue)
+                currRootVar.left = left
+                currRootVar.right = remove(right, currRootVar.value)
+            } else if (currRootVar.right != null) {
+                currRootVar = currRootVar.right
+            } else if (currRootVar.left != null) {
+                currRootVar = currRootVar.left
+            } else {
+                currRootVar = null
+            }
+        } else if (comparison < 0) {
+            currRootVar.left = remove(currRootVar.left, element)
+        } else {
+            currRootVar.right = remove(currRootVar.right, element)
+        }
+        return currRootVar
+    }
+
+    private fun getMinimumRightChild(node: Node<T>): T {
+        return if (node.left == null) node.value
+        else getMinimumRightChild(node.left!!)
     }
 
     override fun comparator(): Comparator<in T>? =
