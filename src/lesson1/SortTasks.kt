@@ -110,14 +110,14 @@ fun sortTemperatures(inputName: String, outputName: String) {
         transformed[index] = (line.toDouble() * 10 + minTemp).toInt()
     }
 
-    val output = File(outputName).bufferedWriter()
-    val sorted = countingSort(transformed, maxTemp)
-    for (element in sorted) {
-        val retransformed = (element - minTemp) / 10.0
-        output.write("$retransformed")
-        output.newLine()
+    File(outputName).bufferedWriter().use {
+        val sorted = countingSort(transformed, maxTemp)
+        for (element in sorted) {
+            val retransformed = (element - minTemp) / 10.0
+            it.write("$retransformed")
+            it.newLine()
+        }
     }
-    output.close()
 }
 
 /**
@@ -150,48 +150,44 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    // Трудоёмкость O(N*logN) + 3 * O(N) = O(N*logN)
+    // Трудоёмкость O(N)*O(logN) + 2*O(N) = O(N*logN)
     // Ресурсоёмкость O(N)
 
-    val numbers = mutableListOf<Int>()
+    val map = mutableMapOf<Int, Int>()
     val fileLines = File(inputName).readLines()
 
     for (line in fileLines) {
-        numbers.add(line.toInt())
+        val number = line.toInt()
+        map[number] = map.getOrDefault(number, 0) + 1
     }
 
-    numbers.sort()
-
-    var valueOfFrequent = numbers[0]
-    var previous = valueOfFrequent
+    var mostFrequentNumber = Int.MAX_VALUE
     var maxFrequency = 1
-    var currentFrequency = 1
-    for (i in 1 until numbers.size) {
-        val currentNum = numbers[i]
-        if (currentNum == previous) {
-            currentFrequency++
-            if (currentFrequency > maxFrequency) {
-                valueOfFrequent = previous
-                maxFrequency = currentFrequency
+    for (element in map) {
+        val value = element.value
+        if (value >= maxFrequency) {
+            val key = element.key
+            if (value > maxFrequency) {
+                maxFrequency = value
+                mostFrequentNumber = key
+            } else {
+                if (key < mostFrequentNumber) mostFrequentNumber = key
             }
-        } else {
-            currentFrequency = 1
         }
-        previous = currentNum
     }
 
-    val output = File(outputName).bufferedWriter()
-    for (line in fileLines) {
-        if (line.toInt() != valueOfFrequent) {
-            output.write(line)
-            output.newLine()
+    File(outputName).bufferedWriter().use {
+        for (line in fileLines) {
+            if (line.toInt() != mostFrequentNumber) {
+                it.write(line)
+                it.newLine()
+            }
+        }
+        for (i in 1..maxFrequency) {
+            it.write("$mostFrequentNumber")
+            it.newLine()
         }
     }
-    repeat(maxFrequency) {
-        output.write("$valueOfFrequent")
-        output.newLine()
-    }
-    output.close()
 }
 
 /**
