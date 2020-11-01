@@ -1,6 +1,7 @@
 package lesson3
 
 import java.util.*
+import kotlin.NoSuchElementException
 import kotlin.math.max
 
 // attention: Comparable is supported but Comparator is not
@@ -81,6 +82,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      */
     override fun remove(element: T): Boolean {
         // Трудоёмкость: O(height)
+        // Ресурсоёмкость: O(1)
         if (!contains(element)) return false
         root = remove(root, element)
         size--
@@ -127,6 +129,20 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
 
     inner class BinarySearchTreeIterator internal constructor() : MutableIterator<T> {
 
+        private var stack = Stack<Node<T>>()
+        private var current: Node<T>? = null
+
+        private fun pushAll(node: Node<T>?) {
+            if (node != null) {
+                stack.push(node)
+                pushAll(node.left)
+            }
+        }
+
+        init {
+            pushAll(root)
+        }
+
         /**
          * Проверка наличия следующего элемента
          *
@@ -138,8 +154,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Средняя
          */
         override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
+            return stack.isNotEmpty()
         }
 
         /**
@@ -156,8 +171,10 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Средняя
          */
         override fun next(): T {
-            // TODO
-            throw NotImplementedError()
+            if (stack.isEmpty()) throw IllegalStateException()
+            current = stack.pop()
+            pushAll(current!!.right)
+            return current!!.value
         }
 
         /**
@@ -173,8 +190,9 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Сложная
          */
         override fun remove() {
-            // TODO
-            throw NotImplementedError()
+            if (current == null) throw IllegalStateException()
+            remove(current!!.value)
+            current = null
         }
 
     }
