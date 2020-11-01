@@ -132,15 +132,15 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         private var stack = Stack<Node<T>>()
         private var current: Node<T>? = null
 
-        private fun pushAll(node: Node<T>?) {
+        private fun pushAllLeft(node: Node<T>?) {
             if (node != null) {
                 stack.push(node)
-                pushAll(node.left)
+                pushAllLeft(node.left)
             }
         }
 
         init {
-            pushAll(root)
+            pushAllLeft(root)
         }
 
         /**
@@ -154,6 +154,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Средняя
          */
         override fun hasNext(): Boolean {
+            // Трудоёмкость: O(1)
+            // Ресурсоёмкость: O(1)
             return stack.isNotEmpty()
         }
 
@@ -171,9 +173,11 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Средняя
          */
         override fun next(): T {
-            if (stack.isEmpty()) throw IllegalStateException()
+            // Трудоёмкость: O(height)
+            // Ресурсоёмкость: O(1)
+            if (stack.isEmpty()) throw NoSuchElementException()
             current = stack.pop()
-            pushAll(current!!.right)
+            pushAllLeft(current!!.right)
             return current!!.value
         }
 
@@ -190,6 +194,8 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Сложная
          */
         override fun remove() {
+            // Трудоёмкость: O(height)
+            // Ресурсоёмкость: O(1)
             if (current == null) throw IllegalStateException()
             remove(current!!.value)
             current = null

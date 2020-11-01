@@ -107,6 +107,50 @@ abstract class AbstractBinarySearchTreeTest {
     }
 
     protected fun doRemoveTest() {
+        // На всякий случай удаление корня:
+        val controlSet1 = mutableSetOf(50, 25, 65, 21, 27, 64, 66)
+        println("Initial set: $controlSet1")
+        val binarySet1 = create()
+        for (element in controlSet1) {
+            binarySet1 += element
+        }
+        controlSet1.remove(50)
+        println("Control set: $controlSet1")
+        val expectedSize1 = binarySet1.size - 1
+        val maxHeight1 = binarySet1.height()
+        println("Removing element 50 from the tree...")
+        assertTrue(
+            binarySet1.remove(50),
+            "An element was supposedly not removed from the tree when it should have been."
+        )
+        assertTrue(
+            50 !in binarySet1,
+            "The tree contains a supposedly removed element."
+        )
+        assertTrue(
+            binarySet1.checkInvariant(),
+            "The binary search tree invariant is false after BinarySearchTree.remove()."
+        )
+        assertTrue(
+            binarySet1.height() <= maxHeight1,
+            "The tree's height increased after BinarySearchTree.remove()."
+        )
+        assertFalse(
+            binarySet1.remove(50),
+            "An element that was already not in the tree was supposedly removed."
+        )
+        assertEquals(
+            expectedSize1, binarySet1.size,
+            "The size of the tree is incorrect: was ${binarySet1.size}, should've been $expectedSize1."
+        )
+        for (element in controlSet1) {
+            assertTrue(
+                binarySet1.contains(element),
+                "The tree doesn't have the element $element from the control set."
+            )
+        }
+        println("All clear!")
+
         implementationTest { create().remove(0) }
         val random = Random()
         for (iteration in 1..100) {
@@ -165,6 +209,8 @@ abstract class AbstractBinarySearchTreeTest {
     }
 
     protected fun doIteratorTest() {
+        // Кажется, что всё, что можно, протестировано, но исправил момент, где проверяется не то исключение
+
         implementationTest { create().iterator().hasNext() }
         implementationTest { create().iterator().next() }
         val random = Random()
@@ -200,7 +246,7 @@ abstract class AbstractBinarySearchTreeTest {
                     "BinarySearchTreeIterator doesn't traverse the tree correctly."
                 )
             }
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 binaryIter.next()
             }
             println("All clear!")
