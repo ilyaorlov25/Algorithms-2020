@@ -2,6 +2,8 @@
 
 package lesson7
 
+import kotlin.math.max
+
 /**
  * Наибольшая общая подпоследовательность.
  * Средняя
@@ -15,7 +17,43 @@ package lesson7
  * При сравнении подстрок, регистр символов *имеет* значение.
  */
 fun longestCommonSubSequence(first: String, second: String): String {
-    TODO()
+    // Трудоёмкость: O(N*M)
+    // Ресурсоёмкость: O((N + 1)*(M + 1)), N = first.length, M = second.length
+
+    val firstLength = first.length
+    val secondLength = second.length
+    val subseq = Array(firstLength + 1) { IntArray(secondLength + 1) { 0 } }
+
+    for (i in 1..firstLength) {
+        for (j in 1..secondLength) {
+            if (first[i - 1] == second[j - 1])
+                subseq[i][j] = 1 + subseq[i - 1][j - 1]
+            else
+                subseq[i][j] = max(subseq[i - 1][j], subseq[i][j - 1])
+        }
+    }
+
+    val answer = StringBuilder()
+    var i = firstLength
+    var j = secondLength
+
+    while (i > 0 && j > 0) {
+        when {
+            first[i - 1] == second[j - 1] -> {
+                answer.insert(0, first[i - 1])
+                i--
+                j--
+            }
+            subseq[i - 1][j] == subseq[i][j] -> {
+                i--
+            }
+            else -> {
+                j--
+            }
+        }
+    }
+
+    return answer.toString()
 }
 
 /**
