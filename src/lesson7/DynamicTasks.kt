@@ -17,8 +17,8 @@ import kotlin.math.max
  * При сравнении подстрок, регистр символов *имеет* значение.
  */
 fun longestCommonSubSequence(first: String, second: String): String {
-    // Трудоёмкость: O(N*M)
-    // Ресурсоёмкость: O((N + 1)*(M + 1)), N = first.length, M = second.length
+    // Трудоёмкость: O(N * M)
+    // Ресурсоёмкость: O((N + 1)*(M + 1)) = O(N * M), N = first.length, M = second.length
 
     val firstLength = first.length
     val secondLength = second.length
@@ -69,7 +69,37 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    TODO()
+    // Трудоёмкость: O(N^2)
+    // Ресурсоёмкость: O(N)
+
+    val size = list.size
+    if (size <= 1) return list
+    val subseq = IntArray(size) { 1 }
+    val link = IntArray(size) { -1 }
+    var maxLength = 1
+    var indexOfLongest = 0
+
+    for (i in 1 until size) {
+        for (j in 0 until i) {
+            if (list[i] > list[j] && subseq[i] <= subseq[j]) {
+                subseq[i] = subseq[j] + 1
+                link[i] = j
+            }
+        }
+        if (subseq[i] > maxLength) {
+            indexOfLongest = i
+            maxLength = subseq[i]
+        }
+    }
+
+    val result = mutableListOf<Int>()
+
+    while (indexOfLongest >= 0) {
+        result.add(0, list[indexOfLongest])
+        indexOfLongest = link[indexOfLongest]
+    }
+
+    return result
 }
 
 /**
