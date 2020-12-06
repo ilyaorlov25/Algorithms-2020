@@ -2,7 +2,9 @@
 
 package lesson6
 
+import lesson6.impl.GraphBuilder
 import java.io.File
+import java.util.*
 
 /**
  * Эйлеров цикл.
@@ -63,7 +65,32 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * J ------------ K
  */
 fun Graph.minimumSpanningTree(): Graph {
-    TODO()
+    // Трудоёмкость: O(V + E)
+    // Ресурсоёмкость: O(V + E)
+
+    if (vertices.size <= 2) return this
+
+    val answer = GraphBuilder()
+    val visited = mutableSetOf<Graph.Vertex>()
+    val unvisited = ArrayDeque<Graph.Vertex>()
+    val firstVertex = vertices.elementAt(0)
+    unvisited.push(firstVertex)
+    visited.add(firstVertex)
+
+    while (unvisited.isNotEmpty()) {
+        val current = unvisited.pop()
+        for (vertex in getNeighbors(current)) {
+            if (!visited.contains(vertex)) {
+                unvisited.push(vertex)
+                answer.addVertex(current.toString())
+                answer.addVertex(vertex.toString())
+                answer.addConnection(current, vertex)
+                visited.add(vertex)
+            }
+        }
+    }
+
+    return answer.build()
 }
 
 /**
@@ -150,6 +177,10 @@ fun Graph.longestSimplePath(): Path {
  * Остальные символы ни в файле, ни в словах не допускаются.
  */
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
+    // Трудоёмкость: O(W * N^2) (?)
+    // Ресурсоёмкость: O(W + N)
+    // N - кол-во букв на поле; W - words.length;
+
     val answer = mutableSetOf<String>()
     val lines = File(inputName).readLines().map { it.split(" ") }
 

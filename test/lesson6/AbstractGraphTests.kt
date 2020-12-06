@@ -124,6 +124,46 @@ abstract class AbstractGraphTests {
     }
 
     fun minimumSpanningTree(minimumSpanningTree: Graph.() -> Graph) {
+        // Тест для следующего графа (в нашем случае не учитывая веса):
+        // https://ru.wikipedia.org/wiki/Минимальное_остовное_дерево#/media/Файл:Minimum_spanning_tree.svg
+
+        val myGraph = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            val h = addVertex("H")
+            val i = addVertex("I")
+            val j = addVertex("J")
+            addConnection(a, b)
+            addConnection(a, c)
+            addConnection(a, g)
+            addConnection(a, j)
+            addConnection(b, c)
+            addConnection(b, d)
+            addConnection(b, j)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(d, h)
+            addConnection(d, j)
+            addConnection(e, f)
+            addConnection(e, i)
+            addConnection(e, h)
+            addConnection(f, g)
+            addConnection(f, i)
+            addConnection(g, i)
+            addConnection(g, j)
+            addConnection(h, i)
+            addConnection(h, j)
+            addConnection(i, j)
+        }.build()
+        val myTree = myGraph.minimumSpanningTree()
+        assertEquals(9, myTree.edges.size)
+        assertEquals(9, myTree.findBridges().size)
+
         val emptyGraph = GraphBuilder().build()
         assertTrue(emptyGraph.minimumSpanningTree().edges.isEmpty())
         val graph = GraphBuilder().apply {
