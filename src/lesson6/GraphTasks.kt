@@ -2,6 +2,8 @@
 
 package lesson6
 
+import java.io.File
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -148,5 +150,70 @@ fun Graph.longestSimplePath(): Path {
  * Остальные символы ни в файле, ни в словах не допускаются.
  */
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
-    TODO()
+    val answer = mutableSetOf<String>()
+    val lines = File(inputName).readLines().map { it.split(" ") }
+
+    for (word in words) {
+        val wordLength = word.length
+        found@ for (lineIndex in lines.indices) {
+            val line = lines[lineIndex]
+            for (letterIndex in line.indices) {
+                val letter = line[letterIndex]
+                if (letter == word[0].toString()) {
+                    if (searchWord(lines, lineIndex, letterIndex, word, 0, wordLength)) {
+                        answer.add(word)
+                        break@found
+                    }
+                }
+            }
+        }
+    }
+
+    return answer
+}
+
+fun searchWord(
+    lines: List<List<String>>,
+    lineIndex: Int,
+    letterIndex: Int,
+    word: String,
+    startIndex: Int,
+    wordLength: Int
+): Boolean {
+    if (startIndex == wordLength - 1) return true
+
+    if (checkLeft(lines, lineIndex, letterIndex, word[startIndex + 1])) {
+        if (searchWord(lines, lineIndex, letterIndex - 1, word, startIndex + 1, wordLength)) return true
+    }
+    if (checkRight(lines, lineIndex, letterIndex, word[startIndex + 1])) {
+        if (searchWord(lines, lineIndex, letterIndex + 1, word, startIndex + 1, wordLength)) return true
+    }
+    if (checkUp(lines, lineIndex, letterIndex, word[startIndex + 1])) {
+        if (searchWord(lines, lineIndex - 1, letterIndex, word, startIndex + 1, wordLength)) return true
+    }
+    if (checkDown(lines, lineIndex, letterIndex, word[startIndex + 1])) {
+        if (searchWord(lines, lineIndex + 1, letterIndex, word, startIndex + 1, wordLength)) return true
+    }
+
+    return false
+}
+
+fun checkLeft(lines: List<List<String>>, lineIndex: Int, letterIndex: Int, letterSuspectLeft: Char): Boolean {
+    if (letterIndex == 0) return false
+    return lines[lineIndex][letterIndex - 1] == letterSuspectLeft.toString()
+}
+
+fun checkRight(lines: List<List<String>>, lineIndex: Int, letterIndex: Int, letterSuspectRight: Char): Boolean {
+    if (letterIndex == lines[lineIndex].size - 1) return false
+    return lines[lineIndex][letterIndex + 1] == letterSuspectRight.toString()
+}
+
+fun checkUp(lines: List<List<String>>, lineIndex: Int, letterIndex: Int, letterSuspectUp: Char): Boolean {
+    if (lineIndex == 0) return false
+    return lines[lineIndex - 1][letterIndex] == letterSuspectUp.toString()
+}
+
+fun checkDown(lines: List<List<String>>, lineIndex: Int, letterIndex: Int, letterSuspectDown: Char): Boolean {
+    if (lineIndex == lines.size - 1) return false
+    return lines[lineIndex + 1][letterIndex] == letterSuspectDown.toString()
 }

@@ -355,6 +355,21 @@ abstract class AbstractGraphTests {
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {
         assertEquals(
+            // только одно слово в файле, где много начинающихся так же слов
+            setOf("РОМАН"),
+            baldaSearcher("input/balda_in4.txt", setOf("РОМАН"))
+        )
+        assertEquals(
+            // много похожих путей для поиска слова, но самих слов нет
+            emptySet(),
+            baldaSearcher("input/balda_in5.txt", setOf("РОМАН", "МРАМОР", "АРМОРАМОРА", "НЕДОПОМОР"))
+        )
+        assertEquals(
+            // искомое слово в самом конце очень длинного файла, и имеет много неправильных ходов
+            setOf("САМОИЗОЛЯЦИЯ"),
+            baldaSearcher("input/balda_in6.txt", setOf("ВЫСОКОПРЕВОСХОДИТЕЛЬСТВО", "САМОИЗОЛЯЦИЯ"))
+        )
+        assertEquals(
             setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ"),
             baldaSearcher("input/balda_in1.txt", setOf("ТРАВА", "КРАН", "АКВА", "НАРТЫ", "РАК"))
         )
