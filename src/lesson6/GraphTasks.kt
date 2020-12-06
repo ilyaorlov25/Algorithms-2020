@@ -179,7 +179,7 @@ fun Graph.longestSimplePath(): Path {
 fun baldaSearcher(inputName: String, words: Set<String>): Set<String> {
     // Трудоёмкость: O(W * N^2) (?)
     // Ресурсоёмкость: O(W + N)
-    // N - кол-во букв на поле; W - words.length;
+    // N - кол-во букв на поле; W - words.size;
 
     val answer = mutableSetOf<String>()
     val lines = File(inputName).readLines().map { it.split(" ") }
