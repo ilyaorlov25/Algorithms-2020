@@ -150,7 +150,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  */
 fun sortSequence(inputName: String, outputName: String) {
-    // Трудоёмкость O(N)*O(logN) + 2*O(N) = O(N*logN)
+    // Трудоёмкость O(N)
     // Ресурсоёмкость O(N)
 
     val map = mutableMapOf<Int, Int>()

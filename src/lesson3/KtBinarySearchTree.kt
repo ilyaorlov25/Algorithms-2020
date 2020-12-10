@@ -129,7 +129,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
 
     inner class BinarySearchTreeIterator internal constructor() : MutableIterator<T> {
 
-        private var stack = Stack<Node<T>>()
+        private var stack = ArrayDeque<Node<T>>()
         private var current: Node<T>? = null
 
         private fun pushAllLeft(node: Node<T>?) {
