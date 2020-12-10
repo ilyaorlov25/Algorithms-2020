@@ -69,37 +69,46 @@ fun longestCommonSubSequence(first: String, second: String): String {
  * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
  */
 fun longestIncreasingSubSequence(list: List<Int>): List<Int> {
-    // Трудоёмкость: O(N^2)
+    // Трудоёмкость: O(N * logN)
     // Ресурсоёмкость: O(N)
 
     val size = list.size
-    if (size <= 1) return list
-    val subseq = IntArray(size) { 1 }
-    val link = IntArray(size) { -1 }
-    var maxLength = 1
-    var indexOfLongest = 0
+    val d = IntArray(size + 1) { Int.MIN_VALUE }
+    val position = IntArray(size + 1)
+    val previous = IntArray(size)
+    var length = 0
 
-    for (i in 1 until size) {
-        for (j in 0 until i) {
-            if (list[i] > list[j] && subseq[i] <= subseq[j]) {
-                subseq[i] = subseq[j] + 1
-                link[i] = j
-            }
-        }
-        if (subseq[i] > maxLength) {
-            indexOfLongest = i
-            maxLength = subseq[i]
+    d[0] = Int.MAX_VALUE
+    position[0] = -1
+
+    for (i in size - 1 downTo 0) {
+        val j = binarySearch(d, list[i])
+        if (d[j - 1] > list[i] && d[j] < list[i]) {
+            d[j] = list[i]
+            position[j] = i
+            previous[i] = position[j - 1]
+            if (j > length) length = j
         }
     }
 
-    val result = mutableListOf<Int>()
-
-    while (indexOfLongest >= 0) {
-        result.add(0, list[indexOfLongest])
-        indexOfLongest = link[indexOfLongest]
+    val answer = mutableListOf<Int>()
+    var pos = position[length]
+    while (pos != -1) {
+        answer.add(list[pos])
+        pos = previous[pos]
     }
+    return answer
+}
 
-    return result
+fun binarySearch(array: IntArray, element: Int): Int {
+    var left = 0
+    var right = array.size - 1
+    while (left != right) {
+        val mid = (left + right) / 2
+        if (array[mid] < element) right = mid
+        else left = mid + 1
+    }
+    return left
 }
 
 /**
